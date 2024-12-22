@@ -12,6 +12,9 @@ import (
 var env ConfigDto
 
 func init() {
+	if env.port == ""{
+		LoadEnvironmentVariable()
+	}
 	ConfigEnv()
 }
 

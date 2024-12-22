@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/Real-Musafir/bookshop/config"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,5 +19,7 @@ func main() {
 	})
 	fmt.Println("Go app started successfully")
 
-	app.Run()
+	port := config.GetEnvProperty("port")
+
+	app.Run(fmt.Sprintf(":%s", port))
 }
