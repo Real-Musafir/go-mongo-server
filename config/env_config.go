@@ -22,6 +22,7 @@ type ConfigDto struct {
 	port string
 	secret_key string
 	database_url string
+	database_name string
 }
 
 func ConfigEnv() {
@@ -29,6 +30,7 @@ func ConfigEnv() {
 		port: os.Getenv("PORT"),
 		secret_key: os.Getenv("SECRET_KEY"),
 		database_url: os.Getenv("MONGO_DB_URL"),
+		database_name: os.Getenv("MONGO_DB_NAME"),
 	}
 }
 
