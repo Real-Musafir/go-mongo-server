@@ -9,7 +9,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-
+type IMongoRepository interface {
+	Create(data interface{}, ctx mongo.SessionContext) (interface{}, error)
+	FindOne(id string, ctx mongo.SessionContext) (interface{}, error)
+	Update(id string, data interface{}, ctx mongo.SessionContext) (interface{}, error)
+	Delete(id string, ctx mongo.SessionContext) (interface{}, error)
+	FindAll(filter interface{}, ctx mongo.SessionContext) ([]map[string]interface{}, error)
+	Aggregate(pipelines mongo.Pipeline, ctx mongo.SessionContext) ([]map[string]interface{}, error)
+}
 
 type MongoRepository struct {
 	collection *mongo.Collection
@@ -25,13 +32,13 @@ func getUpSessionContext(sesionContext mongo.SessionContext) mongo.SessionContex
 	
 }
 
-func (mr *MongoRepository) Create(data interface{}, ctx mongo.SessionContext) (interface{}, error) {
+func (mr MongoRepository) Create(data interface{}, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getUpSessionContext(ctx)
 	result, err := mr.collection.InsertOne(sessionContext, data)
 	return result, err
 }
 
-func (mr *MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interface{}, error) {
+func (mr MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getUpSessionContext(ctx)
 	objectId, err := primitive.ObjectIDFromHex(id)
 
@@ -49,21 +56,21 @@ func (mr *MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interfa
 }
 
 
-func (mr *MongoRepository) Update(id string, data interface{}, ctx mongo.SessionContext) (interface{}, error) {
+func (mr MongoRepository) Update(id string, data interface{}, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getUpSessionContext(ctx)
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	res, err := mr.collection.UpdateOne(sessionContext, bson.M{"_id":objectId}, data)
 	return res, err
 }
 
-func (mr *MongoRepository) Delete(id string, ctx mongo.SessionContext) (interface{}, error) {
+func (mr MongoRepository) Delete(id string, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getUpSessionContext(ctx)
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	res, err := mr.collection.DeleteOne(sessionContext, bson.M{"_id":objectId})
 	return res, err
 }
 
-func (mr *MongoRepository) FindAll(filter interface{}, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
+func (mr MongoRepository) FindAll(filter interface{}, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
 	sessionContext := getUpSessionContext(ctx)
 	cursor, err := mr.collection.Find(sessionContext, filter)
 
@@ -85,7 +92,7 @@ func (mr *MongoRepository) FindAll(filter interface{}, ctx mongo.SessionContext)
 	return results, cursor.Err()
 }
 
-func (mr *MongoRepository) Aggregate(pipelines mongo.Pipeline, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
+func (mr MongoRepository) Aggregate(pipelines mongo.Pipeline, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
 	sessionContext := getUpSessionContext(ctx)
 
 	cursor, err := mr.collection.Aggregate(sessionContext, pipelines)
@@ -109,7 +116,7 @@ func (mr *MongoRepository) Aggregate(pipelines mongo.Pipeline, ctx mongo.Session
 
 }
 
-func GetMongoRepository(dbName string, collectionName string) *MongoRepository {
+func GetMongoRepository(dbName string, collectionName string) IMongoRepository {
 	collection := config.GetDatabaseCollection(&dbName, collectionName)
 	return &MongoRepository {
 		collection: collection,
