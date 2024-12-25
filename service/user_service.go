@@ -16,3 +16,10 @@ type UserService struct {
 func (us *UserService) CreateUser(data interface{}, sessionContext mongo.SessionContext) (interface{}, error) {
 	return us.repository.Create(data, sessionContext)
 }
+
+
+func GetUserService(repository repo.IMongoRepository) IUserService{
+	return &UserService{
+		repository: repository,
+	}
+}

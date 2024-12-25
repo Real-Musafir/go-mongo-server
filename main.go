@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Real-Musafir/bookshop/config"
+	"github.com/Real-Musafir/bookshop/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,9 @@ func main() {
 			"statusCode":200,
 		})
 	})
+
+	routes.RegisterRoutes(app)
+
 	fmt.Println("Go app started successfully")
 
 	port := config.GetEnvProperty("port")

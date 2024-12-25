@@ -19,3 +19,7 @@ func (rs *ResponseService) Success(ctx *gin.Context, statusCode int, data interf
 
 	ctx.JSON(statusCode, finalResponse)
 }
+
+func GetResponseService() *ResponseService {
+	return &ResponseService{}
+}
