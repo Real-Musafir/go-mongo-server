@@ -9,18 +9,19 @@ import (
 
 type IUserService interface {
 	CreateUser(data interface{}, sessionContext mongo.SessionContext) (interface{}, error)
+	FindOneUserByEmail(email string, sessionContext mongo.SessionContext) (interface{}, error)
 }
 
 type UserService struct {
-	repository repo.IMongoRepository
+	repository repo.Repository
 }
 
 func (us *UserService) CreateUser(data interface{}, sessionContext mongo.SessionContext) (interface{}, error) {
-	return us.repository.Create(data, sessionContext)
+	return us.repository.UserRepository.Create(data, sessionContext)
 }
 
 func (us *UserService) FindOneUserByEmail(email string, sessionContext mongo.SessionContext) (interface{}, error) {
-	res, err := us.repository.FindOneByKey("email", email, sessionContext)
+	res, err := us.repository.UserRepository.FindOneByKey("email", email, sessionContext)
 
 	if err != nil {
 		return nil, err
@@ -36,7 +37,7 @@ func (us *UserService) FindOneUserByEmail(email string, sessionContext mongo.Ses
 }
 
 
-func GetUserService(repository repo.IMongoRepository) IUserService{
+func GetUserService(repository repo.Repository) IUserService{
 	return &UserService{
 		repository: repository,
 	}

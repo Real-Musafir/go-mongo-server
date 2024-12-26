@@ -9,8 +9,8 @@ import (
 )
 
 func RegisterUserRoutes(router *gin.RouterGroup) {
-	repository := repo.GetRepository().UserRepository
-	userService := service.GetUserService(repository)
+	repository := repo.GetRepository()
+	userService := service.GetUserService(*repository)
 	responseService := utils.GetResponseService()
 	userController := controller.GetUserController(userService, *responseService)
 
