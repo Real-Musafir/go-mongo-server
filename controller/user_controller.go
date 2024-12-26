@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"github.com/Real-Musafir/bookshop/model"
 	"github.com/Real-Musafir/bookshop/service"
 	"github.com/Real-Musafir/bookshop/utils"
@@ -20,6 +22,7 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 			"statusCode": 400,
 			"error": err.Error(),
 		})
+		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", err.Error(), err))
 		return
 	}
 

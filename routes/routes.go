@@ -10,4 +10,9 @@ func RegisterRoutes(r *gin.Engine){
 	{
 		RegisterUserRoutes(userRoutes)
 	}
+
+	authRoutes := router.Group("/auth")
+	{
+		RegisterAuthRoutes(authRoutes)
+	}
 }
