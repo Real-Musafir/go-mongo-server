@@ -25,24 +25,25 @@ type MongoRepository struct {
 	collection *mongo.Collection
 }
 
-func getUpSessionContext(sesionContext mongo.SessionContext) mongo.SessionContext {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+func getSessionContext(sesionContext mongo.SessionContext) mongo.SessionContext {
+	// ctx, cancel := context.WithCancel(context.Background())
+	// defer cancel()
+	cont := context.Background()
 	if sesionContext == nil {
-		return mongo.NewSessionContext(ctx, mongo.SessionFromContext(ctx))
+		return mongo.NewSessionContext(cont, mongo.SessionFromContext(cont))
 	}
 	return sesionContext
 	
 }
 
 func (mr MongoRepository) Create(data interface{}, ctx mongo.SessionContext) (interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 	result, err := mr.collection.InsertOne(sessionContext, data)
 	return result, err
 }
 
 func (mr MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 	objectId, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
@@ -59,7 +60,7 @@ func (mr MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interfac
 }
 
 func (mr MongoRepository) FindOneByKey(key string, value interface{}, ctx mongo.SessionContext) (interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 	actualValue, err := primitive.ObjectIDFromHex(value.(string))
 
 	var result *mongo.SingleResult
@@ -81,21 +82,21 @@ func (mr MongoRepository) FindOneByKey(key string, value interface{}, ctx mongo.
 
 
 func (mr MongoRepository) Update(id string, data interface{}, ctx mongo.SessionContext) (interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	res, err := mr.collection.UpdateOne(sessionContext, bson.M{"_id":objectId}, data)
 	return res, err
 }
 
 func (mr MongoRepository) Delete(id string, ctx mongo.SessionContext) (interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	res, err := mr.collection.DeleteOne(sessionContext, bson.M{"_id":objectId})
 	return res, err
 }
 
 func (mr MongoRepository) FindAll(filter interface{}, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 	cursor, err := mr.collection.Find(sessionContext, filter)
 
 	if err!= nil {
@@ -117,7 +118,7 @@ func (mr MongoRepository) FindAll(filter interface{}, ctx mongo.SessionContext) 
 }
 
 func (mr MongoRepository) Aggregate(pipelines mongo.Pipeline, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
-	sessionContext := getUpSessionContext(ctx)
+	sessionContext := getSessionContext(ctx)
 
 	cursor, err := mr.collection.Aggregate(sessionContext, pipelines)
 
