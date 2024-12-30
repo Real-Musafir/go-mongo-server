@@ -61,21 +61,26 @@ func (mr MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interfac
 
 func (mr MongoRepository) FindOneByKey(key string, value interface{}, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getSessionContext(ctx)
-	actualValue, err := primitive.ObjectIDFromHex(value.(string))
+	objId, err := primitive.ObjectIDFromHex(value.(string))
+
+	
 
 	var result *mongo.SingleResult
 
 	if err != nil {
 		fmt.Printf("%s is not an object id", key)
-		result = mr.collection.FindOne(sessionContext, bson.M{key: actualValue})
-	}else {
 		result = mr.collection.FindOne(sessionContext, bson.M{key: value})
+	}else {
+		result = mr.collection.FindOne(sessionContext, bson.M{key: objId})
 	}
 	
 	var  document map[string]interface{}
-	if err := result.Decode(document); err != nil {
+	
+	if err := result.Decode(&document); err != nil {
 		return nil, err
 	}
+
+	// fmt.Println("%s Check the documnt", document)
 
 	return document, nil
 }

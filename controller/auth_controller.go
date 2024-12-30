@@ -24,6 +24,7 @@ func (ac *AuthController) Login(ctx *gin.Context) {
 		})
 
 		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", err.Error(), err))
+		return
 	}
 
 	data, err := ac.authService.Login(loginDto, nil)
