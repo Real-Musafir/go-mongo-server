@@ -1,9 +1,15 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/Real-Musafir/bookshop/middleware"
+	"github.com/gin-gonic/gin"
+)
 
 func RegisterRoutes(r *gin.Engine){
 	router := r.Group("/")
+
+	// Register error handler middleware
+	router.Use(middleware.ErrorHandler())
 
 	userRoutes := router.Group("/users")
 

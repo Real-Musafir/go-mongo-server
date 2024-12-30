@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Real-Musafir/bookshop/config"
 	"go.mongodb.org/mongo-driver/bson"
@@ -63,12 +62,9 @@ func (mr MongoRepository) FindOneByKey(key string, value interface{}, ctx mongo.
 	sessionContext := getSessionContext(ctx)
 	objId, err := primitive.ObjectIDFromHex(value.(string))
 
-	
-
 	var result *mongo.SingleResult
 
 	if err != nil {
-		fmt.Printf("%s is not an object id", key)
 		result = mr.collection.FindOne(sessionContext, bson.M{key: value})
 	}else {
 		result = mr.collection.FindOne(sessionContext, bson.M{key: objId})

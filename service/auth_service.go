@@ -22,7 +22,7 @@ type AuthService struct  {
 func (as *AuthService) Login(loginDto dto.LoginDto, sessionContext mongo.SessionContext) (map[string]interface{}, error) {
 	res, err := as.userService.FindOneUserByEmail(loginDto.Email, sessionContext)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("401::%s::%s::%v", "User Not Found", "AuthService_Login", "User does not exist with this email")
 	}
 
 	user := res.(model.User)
@@ -35,7 +35,7 @@ func (as *AuthService) Login(loginDto dto.LoginDto, sessionContext mongo.Session
 	}
 
 
-	return nil, fmt.Errorf("Invalid credentials")
+	return nil, fmt.Errorf("401::%s::%s::%v", "Invalid credential", "AuthService_Login", "Password Mismatch")
 
 }
 

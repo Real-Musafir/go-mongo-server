@@ -17,12 +17,8 @@ type UserController struct {
 func (uc *UserController) CreateUser(ctx *gin.Context) {
 	var dto model.UserCreateDto
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
-		ctx.JSON(400, gin.H{
-			"message": "Bad Request",
-			"statusCode": 400,
-			"error": err.Error(),
-		})
-		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", err.Error(), err))
+		
+		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", "UserController_CreateUser", err))
 		return
 	}
 

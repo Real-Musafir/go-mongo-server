@@ -17,20 +17,13 @@ type AuthController struct {
 func (ac *AuthController) Login(ctx *gin.Context) {
 	var loginDto dto.LoginDto
 	if err := ctx.ShouldBindJSON(&loginDto); err != nil {
-		ctx.JSON(400, gin.H{
-			"message": "Bad Request",
-			"statusCode": 400,
-			"error": err.Error(),
-		})
-
-		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", err.Error(), err))
+		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", "AuthController_Login", err))
 		return
 	}
 
 	data, err := ac.authService.Login(loginDto, nil)
 	if err != nil {
 		ctx.Error(err)
-		ac.responseService.Success(ctx, 400, nil, "Invalid Credentials")
 		return
 	}
 
