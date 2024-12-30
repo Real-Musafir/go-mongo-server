@@ -30,6 +30,7 @@ func (ac *AuthController) Login(ctx *gin.Context) {
 	data, err := ac.authService.Login(loginDto, nil)
 	if err != nil {
 		ctx.Error(err)
+		ac.responseService.Success(ctx, 400, nil, "Invalid Credentials")
 		return
 	}
 
