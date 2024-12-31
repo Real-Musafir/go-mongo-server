@@ -21,4 +21,9 @@ func RegisterRoutes(r *gin.Engine){
 	{
 		RegisterAuthRoutes(authRoutes)
 	}
+
+	bookRoute := router.Group("/books")
+	{
+		RegisterBookRoutes(bookRoute)
+	}
 }

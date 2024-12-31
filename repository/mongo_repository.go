@@ -44,6 +44,7 @@ func (mr MongoRepository) Create(data interface{}, ctx mongo.SessionContext) (in
 func (mr MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getSessionContext(ctx)
 	objectId, err := primitive.ObjectIDFromHex(id)
+	
 
 	if err != nil {
 		return nil, err
@@ -51,7 +52,7 @@ func (mr MongoRepository) FindOne(id string, ctx mongo.SessionContext) (interfac
 
 	result := mr.collection.FindOne(sessionContext, bson.M{"_id": objectId})
 	var  document map[string]interface{}
-	if err := result.Decode(document); err != nil {
+	if err := result.Decode(&document); err != nil {
 		return nil, err
 	}
 

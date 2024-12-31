@@ -14,7 +14,7 @@ type BookController struct {
 	responseService utils.ResponseService
 }
 
-func (bc *BookController) Create(ctx *gin.Context){
+func (bc *BookController) CreateBook(ctx *gin.Context){
 	var bookDto dto.CreateBookDto
 	if err := ctx.ShouldBindJSON(&bookDto); err != nil {
 		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", "BookController_CreateBook", err))
@@ -50,11 +50,11 @@ func (bc *BookController) GetBookById(ctx *gin.Context){
 
 	data, err := bc.bookService.GetBookById(bookId, nil)
 	if err != nil {
-		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Data fetching failed", "BookController_GetBookById", err))
+		ctx.Error(fmt.Errorf("400::%s::%s::%v", err.Error(), "BookController_GetBookById", err))
 		return
 	}
 
-	bc.responseService.Success(ctx, 200, data, "fetched successfully!")
+	bc.responseService.Success(ctx, 200, data, "fetched successfully!!!")
 }
 
 func (bc *BookController) UpdateBookById(ctx *gin.Context){
