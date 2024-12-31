@@ -98,6 +98,9 @@ func (mr MongoRepository) Delete(id string, ctx mongo.SessionContext) (interface
 
 func (mr MongoRepository) FindAll(filter interface{}, ctx mongo.SessionContext) ([]map[string]interface{}, error) {
 	sessionContext := getSessionContext(ctx)
+	if filter == nil {
+		filter = bson.M{}
+	}
 	cursor, err := mr.collection.Find(sessionContext, filter)
 
 	if err!= nil {
