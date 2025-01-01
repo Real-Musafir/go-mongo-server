@@ -6,6 +6,7 @@ import (
 	"github.com/Real-Musafir/bookshop/dto"
 	"github.com/Real-Musafir/bookshop/model"
 	repo "github.com/Real-Musafir/bookshop/repository"
+	"github.com/Real-Musafir/bookshop/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -26,11 +27,21 @@ func (as *AuthService) Login(loginDto dto.LoginDto, sessionContext mongo.Session
 	}
 
 	user := res.(model.User)
+	token, err := utils.CreateToken(map[string]any{
+		"user_id": user.Id.Hex(),
+		"user_name": user.Name,
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("500::%s::%s::%v", "Internal Server Error", "AuthService_Login", err)
+	}
+
+
 
 	if user.Password == loginDto.Password {
 		return map[string]any{
 			"user":user,
-			"token": "",
+			"token": token,
 		}, nil
 	}
 
