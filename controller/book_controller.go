@@ -58,7 +58,8 @@ func (bc *BookController) GetBookById(ctx *gin.Context){
 }
 
 func (bc *BookController) UpdateBookById(ctx *gin.Context){
-	var bookDto dto.UpdateBookDto
+	var bookDto map[string]interface{}
+	
 	if err := ctx.ShouldBindJSON(&bookDto); err != nil {
 		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", "BookController_UpdateBookById", err))
 		return
@@ -69,6 +70,7 @@ func (bc *BookController) UpdateBookById(ctx *gin.Context){
 		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Data saving failed", "BookController_UpdateBookById", err))
 		return
 	}
+
 
 	bc.responseService.Success(ctx, 201, data, "Successfully updated!")
 }

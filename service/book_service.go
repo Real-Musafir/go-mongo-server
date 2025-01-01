@@ -9,7 +9,7 @@ type IBookService interface {
 	CreateBook(data interface{}, sessionContext mongo.SessionContext) (interface{}, error)
 	GetAllBooks(sessionContext mongo.SessionContext) (interface{}, error)
 	GetBookById(id string, sessionContext mongo.SessionContext) (interface{}, error)
-	UpdateBookById(data interface{}, sessionContext mongo.SessionContext) (interface{}, error)
+	UpdateBookById(data map[string]interface{}, sessionContext mongo.SessionContext) (interface{}, error)
 	DeleteBookById(id string, sessionContext mongo.SessionContext) (interface{}, error)
 }
 
@@ -29,11 +29,11 @@ func (bs *BookService) GetBookById(id string, sessionContext mongo.SessionContex
 	return bs.repository.BookRepository.FindOne(id, sessionContext)
 }
 
-func (bs *BookService) UpdateBookById(data interface{}, sessionContext mongo.SessionContext) (interface{}, error) {
-	bookData := data.(map[string]interface{})
-	id := bookData["id"].(string)
-	delete(bookData, "_id") // form bookData we need to remove id after getting the id
-	return bs.repository.BookRepository.Update(id, bookData, sessionContext)
+func (bs *BookService) UpdateBookById(data map[string]interface{}, sessionContext mongo.SessionContext) (interface{}, error) {
+	bookData := data
+	id := bookData["_id"]
+	delete(bookData, "_id")
+	return bs.repository.BookRepository.Update(id.(string), bookData, sessionContext)
 }
 
 func (bs *BookService) DeleteBookById(id string, sessionContext mongo.SessionContext) (interface{}, error) {

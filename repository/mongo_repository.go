@@ -86,7 +86,7 @@ func (mr MongoRepository) FindOneByKey(key string, value interface{}, ctx mongo.
 func (mr MongoRepository) Update(id string, data interface{}, ctx mongo.SessionContext) (interface{}, error) {
 	sessionContext := getSessionContext(ctx)
 	objectId, _ := primitive.ObjectIDFromHex(id)
-	res, err := mr.collection.UpdateOne(sessionContext, bson.M{"_id":objectId}, data)
+	res, err := mr.collection.UpdateOne(sessionContext, bson.M{"_id":objectId}, bson.M{"$set":data})
 	return res, err
 }
 
