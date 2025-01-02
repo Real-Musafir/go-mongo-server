@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/Real-Musafir/bookshop/model"
 	"github.com/Real-Musafir/bookshop/service"
 	"github.com/Real-Musafir/bookshop/utils"
@@ -10,15 +8,16 @@ import (
 )
 
 type UserController struct {
-	userService service.IUserService
+	userService     service.IUserService
 	responseService utils.ResponseService
 }
 
 func (uc *UserController) CreateUser(ctx *gin.Context) {
 	var dto model.UserCreateDto
 	if err := ctx.ShouldBindJSON(&dto); err != nil {
-		
-		ctx.Error(fmt.Errorf("400::%s::%s::%v", "Bad Request", "UserController_CreateUser", err))
+		// Extract custom error message from the DTO
+		customMessage := utils.ExtractCustomErrorMessage(err, &model.UserCreateDto{})
+		uc.responseService.Failure(ctx, 400, nil, customMessage)
 		return
 	}
 
@@ -29,12 +28,11 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 	}
 
 	uc.responseService.Success(ctx, 200, data, "Successfully saved!")
-
 }
 
-func GetUserController(userService service.IUserService, responseService utils.ResponseService) *UserController{
-	return &UserController {
-		userService: userService,
+func GetUserController(userService service.IUserService, responseService utils.ResponseService) *UserController {
+	return &UserController{
+		userService:     userService,
 		responseService: responseService,
 	}
 }
